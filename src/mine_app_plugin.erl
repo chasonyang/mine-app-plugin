@@ -94,6 +94,7 @@ on_message_acked(ClientId, Username, Message, _Env) ->
     {ok, Message}.
 
 response() ->
+    case mine_app_plugin_cli:query(<<"SELECT * FROM mytable WHERE id = ?">>) of
         {ok, _Columns, []} ->
             io:format("Mysql : ~p~n", [_Columns]);
         {ok, _Columns, Rows} ->

@@ -36,5 +36,6 @@ start_link() ->
 init([]) ->
     %% MySQL Connection Pool.
     {ok, Server} = application:get_env(?APP, server),
+    PoolSpec = ecpool:pool_spec(?APP, ?APP, mine_app_plugin_cli, Server),
     {ok, {{one_for_one, 10, 100}, [PoolSpec]}}.
 
