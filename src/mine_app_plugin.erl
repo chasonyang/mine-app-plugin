@@ -16,6 +16,8 @@
 
 -module(mine_app_plugin).
 
+-include("mine_app_plugin.hrl").
+
 -include_lib("emqttd/include/emqttd.hrl").
 
 -export([load/1, unload/0]).
@@ -79,7 +81,8 @@ on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env)
     {ok, Message};
 
 on_message_publish(Message, _Env) ->
-    io:format("mine publish ~s~n", [emqttd_message:format(Message)]),
+    io:format("response publish ~s~n", [emqttd_message:format(Message)]),
+    response(),
     {ok, Message}.
 
 on_message_delivered(ClientId, Username, Message, _Env) ->
@@ -90,6 +93,15 @@ on_message_acked(ClientId, Username, Message, _Env) ->
     io:format("client(~s/~s) acked: ~s~n", [Username, ClientId, emqttd_message:format(Message)]),
     {ok, Message}.
 
+response() ->
+        {ok, _Columns, []} ->
+            io:format("Mysql : ~p~n", [_Columns]);
+        {ok, _Columns, Rows} ->
+            io:format("Mysql : ~p~n", [Rows]);
+        {error, Reason} ->
+            io:format("Mysql error: ~p~n", [Reason])
+    end.
+    
 %% Called when the plugin application stop
 unload() ->
     emqttd:unhook('client.connected', fun ?MODULE:on_client_connected/3),

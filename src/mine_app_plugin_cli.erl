@@ -14,27 +14,21 @@
 %% limitations under the License.
 %%--------------------------------------------------------------------
 
--module(mine_app_plugin_sup).
+%% @doc MySQL Authentication/ACL Client
+-module(mine_app_plugin_cli).
+
+-behaviour(ecpool_worker).
 
 -include("mine_app_plugin.hrl").
 
--behaviour(supervisor).
-
-%% API
--export([start_link/0]).
-
-%% Supervisor callbacks
--export([init/1]).
-
-start_link() ->
-    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+-export([connect/1, query/1]).
 
 %%--------------------------------------------------------------------
-%% Supervisor callbacks
+%% MySQL Connect/Query
 %%--------------------------------------------------------------------
 
-init([]) ->
-    %% MySQL Connection Pool.
-    {ok, Server} = application:get_env(?APP, server),
-    {ok, {{one_for_one, 10, 100}, [PoolSpec]}}.
-
+connect(Options) ->
+    mysql:start_link(Options).
+    
+query(Sql) ->
+    ecpool:with_client(?APP, fun(C) -> mysql:query(C, Sql) end).
