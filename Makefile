@@ -1,6 +1,11 @@
-PROJECT = emq_plugin_template
-PROJECT_DESCRIPTION = EMQ Plugin Template
+PROJECT = mine_app_plugin
+PROJECT_DESCRIPTION = Mine App Plugin
 PROJECT_VERSION = 2.2
+
+DEPS = mysql ecpool
+
+dep_mysql  = git https://github.com/mysql-otp/mysql-otp 1.2.0
+dep_ecpool = git https://github.com/emqtt/ecpool master
 
 BUILD_DEPS = emqttd cuttlefish
 dep_emqttd = git https://github.com/emqtt/emqttd master
@@ -15,4 +20,4 @@ include erlang.mk
 app:: rebar.config
 
 app.config::
-	./deps/cuttlefish/cuttlefish -l info -e etc/ -c etc/emq_plugin_template.conf -i priv/emq_plugin_template.schema -d data
+	./deps/cuttlefish/cuttlefish -l info -e etc/ -c etc/mine_app_plugin.conf -i priv/mine_app_plugin.schema -d data

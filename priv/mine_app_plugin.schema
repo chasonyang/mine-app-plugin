@@ -1,0 +1,51 @@
+%%-*- mode: erlang -*-
+%% mine_app_plugin config mapping
+{mapping, "auth.mysql.server", "mine_app_plugin.server", [
+  {default, {"127.0.0.1", 3306}},
+  {datatype, [integer, ip, string]}
+]}.
+
+{mapping, "auth.mysql.pool", "mine_app_plugin.server", [
+  {default, 8},
+  {datatype, integer}
+]}.
+
+{mapping, "auth.mysql.username", "mine_app_plugin.server", [
+  {default, ""},
+  {datatype, string}
+]}.
+
+{mapping, "auth.mysql.password", "mine_app_plugin.server", [
+  {default, ""},
+  {datatype, string}
+]}.
+
+{mapping, "auth.mysql.database", "mine_app_plugin.server", [
+  {default, "mqtt"},
+  {datatype, string}
+]}.
+
+{translation, "mine_app_plugin.server", fun(Conf) ->
+  {MyHost, MyPort} =
+  case cuttlefish:conf_get("auth.mysql.server", Conf) of
+    {Ip, Port} -> {Ip, Port};
+    S          -> case string:tokens(S, ":") of
+                    [Domain]       -> {Domain, 3306};
+                    [Domain, Port] -> {Domain, list_to_integer(Port)}
+                  end
+    end,
+  Pool = cuttlefish:conf_get("auth.mysql.pool", Conf),
+  Username = cuttlefish:conf_get("auth.mysql.username", Conf),
+  Passwd = cuttlefish:conf_get("auth.mysql.password", Conf),
+  DB = cuttlefish:conf_get("auth.mysql.database", Conf),
+  [{pool_size, Pool},
+   {auto_reconnect, 1},
+   {host, MyHost},
+   {port, MyPort},
+   {user, Username},
+   {password, Passwd},
+   {database, DB},
+   {encoding, utf8},
+   {keep_alive, true}]
+end}.
+

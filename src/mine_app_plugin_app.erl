@@ -14,7 +14,7 @@
 %% limitations under the License.
 %%--------------------------------------------------------------------
 
--module(emq_plugin_template_app).
+-module(mine_app_plugin_app).
 
 -behaviour(application).
 
@@ -22,13 +22,9 @@
 -export([start/2, stop/1]).
 
 start(_StartType, _StartArgs) ->
-    {ok, Sup} = emq_plugin_template_sup:start_link(),
-    ok = emqttd_access_control:register_mod(auth, emq_auth_demo, []),
-    ok = emqttd_access_control:register_mod(acl, emq_acl_demo, []),
-    emq_plugin_template:load(application:get_all_env()),
+    {ok, Sup} = mine_app_plugin_sup:start_link(),
+    mine_app_plugin:load(application:get_all_env()),
     {ok, Sup}.
 
 stop(_State) ->
-    ok = emqttd_access_control:unregister_mod(auth, emq_auth_demo),
-    ok = emqttd_access_control:unregister_mod(acl, emq_acl_demo),
-    emq_plugin_template:unload().
+    mine_app_plugin:unload().
