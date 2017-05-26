@@ -2,10 +2,11 @@ PROJECT = mine_app_plugin
 PROJECT_DESCRIPTION = Mine App Plugin
 PROJECT_VERSION = 2.2
 
-DEPS = mysql ecpool
+DEPS = mysql ecpool jsx
 
 dep_mysql  = git https://github.com/mysql-otp/mysql-otp 1.2.0
 dep_ecpool = git https://github.com/emqtt/ecpool master
+dep_jsx = git https://github.com/talentdeficit/jsx branch 2.8.0
 
 BUILD_DEPS = emqttd cuttlefish
 dep_emqttd = git https://github.com/emqtt/emqttd master
