@@ -1,3 +1,6 @@
+%%-*- mode: erlang -*-
+%% emqx_auth_clientid rebar.config.script
+
 CONFIG1 = case os:getenv("TRAVIS") of
               "true" ->
                   JobId = os:getenv("TRAVIS_JOB_ID"),
@@ -7,7 +10,7 @@ CONFIG1 = case os:getenv("TRAVIS") of
               _ ->
                   CONFIG
           end,
- 
+
 CUR_BRANCH = os:cmd("git branch | grep -e '^*' | cut -d' ' -f 2") -- "\n",
 
 MATCH_BRANCH = fun (BranchName) when BranchName =:= "master";
@@ -31,7 +34,9 @@ UrlPrefix = "https://github.com/emqx/",
 
 EMQX_DEP = {emqx, {git, UrlPrefix ++ "emqx", {branch, BRANCH}}},
 
-NewDeps = [EMQX_DEP | DEPS],
+EMQX_MGMT_DEP = {emqx_management, {git, UrlPrefix ++ "emqx-management", {branch, BRANCH}}},
+
+NewDeps = [EMQX_DEP, EMQX_MGMT_DEP | DEPS],
 
 CONFIG2 = lists:keystore(deps, 1, CONFIG1, {deps, NewDeps}),
 
