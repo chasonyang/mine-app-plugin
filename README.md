@@ -1,21 +1,20 @@
 
-mine_app_plugin
+emq_plugin_template
 ===================
 
-This is a modified template plugin for the EMQ broker.
+This is a template plugin for the EMQ broker.
 
 Plugin Config
 -------------
 
 Each plugin should have a 'etc/{plugin_name}.conf|config' file to store application config.
 
-added model
+Authentication and ACL
 ----------------------
 
 ```
- [mysql-otp](https://github.com/mysql-otp/mysql-otp)
- [ecpool](https://github.com/emqtt/ecpool)
- [parse json:jsone](https://github.com/sile/jsone)
+emqttd_access_control:register_mod(auth, ?MODULE, Env).
+emqttd_access_control:register_mod(acl, ?MODULE, Env).
 ```
 
 Plugin and Hooks
@@ -25,6 +24,7 @@ Plugin and Hooks
 
 [Hooks Design](http://docs.emqtt.com/en/latest/design.html#hooks-design)
 
+<<<<<<< HEAD
 Build steps
 -----------------
 
@@ -56,6 +56,8 @@ relx.config文件中添加
 ```
 
 
+=======
+>>>>>>> parent of 33c5097... add steps
 License
 -------
 
