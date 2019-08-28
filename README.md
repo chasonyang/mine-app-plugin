@@ -3,6 +3,7 @@ emq_plugin_template
 ===================
 
 This is a template plugin for the EMQ broker.
+only for EMQ 2.3.x,not emqx 3 or later
 
 Plugin Config
 -------------
@@ -24,7 +25,6 @@ Plugin and Hooks
 
 [Hooks Design](http://docs.emqtt.com/en/latest/design.html#hooks-design)
 
-<<<<<<< HEAD
 Build steps
 -----------------
 
@@ -33,7 +33,7 @@ Build steps
 The EMQ broker requires Erlang/OTP R19+ to build since 2.1 release.
 
 ```
-git clone https://github.com/emqtt/emq-relx.git
+git clone --branch v2.3.11 https://github.com/emqtt/emq-relx.git
 
 cd emq-relx && make
 
@@ -53,11 +53,5 @@ relx.config文件中添加
 ```
 {mine_app_plugin, load},
 ```
-
-
-=======
->>>>>>> parent of 33c5097... add steps
-License
--------
 
 Apache License Version 2.0
