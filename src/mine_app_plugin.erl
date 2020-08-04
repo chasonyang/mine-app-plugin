@@ -47,20 +47,20 @@ load(Env) ->
     emqttd:hook('message.acked', fun ?MODULE:on_message_acked/4, [Env]).
 
 on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
-    io:format("client ~s connected, ConnInfo: ~w~n", [ClientId, ConnInfo]),
-    {ok}.
+    io:format("Client(~s) connected, ClientInfo:~n~p~n, ConnInfo:~n~p~n",
+              [ClientId, ClientInfo, ConnInfo]).
 
 on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInfo, _Env) ->
-    io:format("client ~s disconnected, reason: ~w~n", [ClientId, Reason]),
-    ok.
+    io:format("Client(~s) disconnected due to ~p, ClientInfo:~n~p~n, ConnInfo:~n~p~n",
+              [ClientId, ReasonCode, ClientInfo, ConnInfo]).
 
 on_client_subscribe(#{clientid := ClientId}, _Properties, TopicFilters, _Env) ->
-    io:format("client(~s/~s) will subscribe: ~p~n", [Username, ClientId, TopicFilters]),
-    {ok, TopicTable}.
+    io:format("client(~s) will subscribe: ~p~n", [ClientId, TopicFilters]),
+    {ok, TopicFilters}.
     
 on_client_unsubscribe(#{clientid := ClientId}, _Properties, TopicFilters, _Env) ->
     io:format("client(~s) unsubscribe ~p~n", [ClientId, TopicFilters]),
-    {ok, TopicTable}.
+    {ok, TopicFilters}.
 
 on_session_created(ClientId, Username, _Env) ->
     io:format("session(~s/~s) created.", [ClientId, Username]).

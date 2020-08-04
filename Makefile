@@ -35,5 +35,5 @@ $(CUTTLEFISH_SCRIPT):
 	@${REBAR} get-deps
 	@if [ ! -f cuttlefish ]; then make -C _build/default/lib/cuttlefish; fi
 
-app.config: $(CUTTLEFISH_SCRIPT) etc/emqx_auth_mysql.conf
+app.config: $(CUTTLEFISH_SCRIPT) etc/mine_app_plugin.conf
 	$(verbose) $(CUTTLEFISH_SCRIPT) -l info -e etc/ -c etc/mine_app_plugin.conf -i priv/mine_app_plugin.schema -d data
