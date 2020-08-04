@@ -18,7 +18,7 @@
 
 -include("mine_app_plugin.hrl").
 
--include_lib("emqttd/include/emqttd.hrl").
+-include_lib("emqx/include/emqx.hrl").
 
 -export([load/1, unload/0]).
 
