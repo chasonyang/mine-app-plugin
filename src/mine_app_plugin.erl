@@ -24,7 +24,7 @@
 
 %% Hooks functions
 
--export([on_client_connected/3, on_client_disconnected/3]).
+-export([on_client_connected/3, on_client_disconnected/4]).
 
 -export([on_client_subscribe/4, on_client_unsubscribe/4]).
 
@@ -46,20 +46,20 @@ load(Env) ->
     emqttd:hook('message.delivered', fun ?MODULE:on_message_delivered/4, [Env]),
     emqttd:hook('message.acked', fun ?MODULE:on_message_acked/4, [Env]).
 
-on_client_connected(ConnAck, Client = #mqtt_client{client_id = ClientId}, _Env) ->
-    io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]),
-    {ok, Client}.
+on_client_connected(ClientInfo = #{clientid := ClientId}, ConnInfo, _Env) ->
+    io:format("client ~s connected, ConnInfo: ~w~n", [ClientId, ConnInfo]),
+    {ok}.
 
-on_client_disconnected(Reason, _Client = #mqtt_client{client_id = ClientId}, _Env) ->
+on_client_disconnected(ClientInfo = #{clientid := ClientId}, ReasonCode, ConnInfo, _Env) ->
     io:format("client ~s disconnected, reason: ~w~n", [ClientId, Reason]),
     ok.
 
-on_client_subscribe(ClientId, Username, TopicTable, _Env) ->
-    io:format("client(~s/~s) will subscribe: ~p~n", [Username, ClientId, TopicTable]),
+on_client_subscribe(#{clientid := ClientId}, _Properties, TopicFilters, _Env) ->
+    io:format("client(~s/~s) will subscribe: ~p~n", [Username, ClientId, TopicFilters]),
     {ok, TopicTable}.
     
-on_client_unsubscribe(ClientId, Username, TopicTable, _Env) ->
-    io:format("client(~s/~s) unsubscribe ~p~n", [ClientId, Username, TopicTable]),
+on_client_unsubscribe(#{clientid := ClientId}, _Properties, TopicFilters, _Env) ->
+    io:format("client(~s) unsubscribe ~p~n", [ClientId, TopicFilters]),
     {ok, TopicTable}.
 
 on_session_created(ClientId, Username, _Env) ->
@@ -77,20 +77,20 @@ on_session_terminated(ClientId, Username, Reason, _Env) ->
     io:format("session(~s/~s) terminated: ~p.", [ClientId, Username, Reason]).
 
 %% transform message and return
-on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
+on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     {ok, Message};
 
 on_message_publish(Message, _Env) ->
-    io:format("response publish ~s~n", [emqttd_message:format(Message)]),
+    io:format("response publish ~s~n", [emqx_message:format(Message)]),
     response(),
     {ok, Message}.
 
 on_message_delivered(ClientId, Username, Message, _Env) ->
-    io:format("delivered to client(~s/~s): ~s~n", [Username, ClientId, emqttd_message:format(Message)]),
+    io:format("delivered to client(~s/~s): ~s~n", [Username, ClientId, emqx_message:format(Message)]),
     {ok, Message}.
 
 on_message_acked(ClientId, Username, Message, _Env) ->
-    io:format("client(~s/~s) acked: ~s~n", [Username, ClientId, emqttd_message:format(Message)]),
+    io:format("client(~s/~s) acked: ~s~n", [Username, ClientId, emqx_message:format(Message)]),
     {ok, Message}.
 
 response() ->
