@@ -1,24 +1,40 @@
-PROJECT = mine_app_plugin
-PROJECT_DESCRIPTION = Mine App Plugin
-PROJECT_VERSION = 2.2
 
-DEPS = mysql ecpool jsone
+## shallow clone for speed
 
-dep_mysql  = git https://github.com/mysql-otp/mysql-otp 1.2.0
-dep_ecpool = git https://github.com/emqtt/ecpool master
-dep_jsone = git git://github.com/sile/jsone master
+REBAR_GIT_CLONE_OPTIONS += --depth 1
+export REBAR_GIT_CLONE_OPTIONS
 
-BUILD_DEPS = emqttd cuttlefish
-dep_emqttd = git https://github.com/emqtt/emqttd master
-dep_cuttlefish = git https://github.com/emqtt/cuttlefish
+REBAR = rebar3
+all: compile
 
-NO_AUTOPATCH = cuttlefish
+compile:
+	$(REBAR) compile
 
-COVER = true
+clean: distclean
 
-include erlang.mk
+ct: compile
+	$(REBAR) as test ct -v
 
-app:: rebar.config
+clean: distclean
 
-app.config::
-	./deps/cuttlefish/cuttlefish -l info -e etc/ -c etc/mine_app_plugin.conf -i priv/mine_app_plugin.schema -d data
+eunit: compile
+	$(REBAR) as test eunit
+
+xref:
+	$(REBAR) xref
+
+cover:
+	$(REBAR) cover
+
+distclean:
+	@rm -rf _build
+	@rm -f data/app.*.config data/vm.*.args rebar.lock
+
+CUTTLEFISH_SCRIPT = _build/default/lib/cuttlefish/cuttlefish
+
+$(CUTTLEFISH_SCRIPT):
+	@${REBAR} get-deps
+	@if [ ! -f cuttlefish ]; then make -C _build/default/lib/cuttlefish; fi
+
+app.config: $(CUTTLEFISH_SCRIPT) etc/emqx_auth_mysql.conf
+	$(verbose) $(CUTTLEFISH_SCRIPT) -l info -e etc/ -c etc/mine_app_plugin.conf -i priv/mine_app_plugin.schema -d data
