@@ -1,0 +1,14 @@
+{application, mine_app_plugin,
+ [{description, "Mine 's Custom EMQ X plugin"},
+  {vsn, "git"},
+  {modules, []},
+  {registered, [mine_app_plugin_sup]},
+  {applications, [kernel,stdlib,mysql,ecpool,emqx_passwd]},
+  {mod, {mine_app_plugin_app,[]}},
+  {env, []},
+  {licenses, ["Apache-2.0"]},
+  {maintainers, ["EMQ X Team <contact@emqx.io>"]},
+  {links, [{"Homepage", "https://emqx.io/"},
+           {"Github", "https://github.com/chasonyang/mine-app-plugin"}
+          ]}
+ ]}.
