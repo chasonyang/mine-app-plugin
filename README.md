@@ -3,7 +3,6 @@ emq_plugin_template
 ===================
 
 This is a template plugin for the EMQ broker.
-only for EMQ 2.3.x,not emqx 3 or later
 
 Plugin Config
 -------------
