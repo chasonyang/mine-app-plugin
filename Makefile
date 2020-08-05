@@ -14,8 +14,6 @@ clean: distclean
 ct: compile
 	$(REBAR) as test ct -v
 
-clean: distclean
-
 eunit: compile
 	$(REBAR) as test eunit
 
